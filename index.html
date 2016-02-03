@@ -2,7 +2,8 @@
 <head>
 	<title>pluie</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>-->
+        <script type="text/javascript" src="./jquery.min.js"></script>
 	<style "text/css" charset="utf-8">
 
 		.goutte1{
@@ -57,29 +58,42 @@
  var currentPos = $(document).scrollTop();
  var tableauDeBruitsQuiTombent = [];
  var tableauDeBruitsQuiMontent = [];
+ var loops = 1;
+ var heightPerGoutte = 100;
+ var resetGoutte = false;
 
- for (var i = 1; i <= bruitsDeGouttes; i++) {
-   var audioElement = document.createElement('audio');
-   audioElement.setAttribute('src', './sons/' + i + '.mp3');
-   tableauDeBruitsQuiTombent.push(audioElement);
+ for (var loop = 0; loop < loops; loop++) {
+   for (var i = 1; i <= bruitsDeGouttes; i++) {
+     var audioElement = document.createElement('audio');
+     audioElement.setAttribute('src', './sons/' + i + '.mp3');
+     tableauDeBruitsQuiTombent.push(audioElement);
 
-   var audioElement = document.createElement('audio');
-   audioElement.setAttribute('src', './sons/r_' + i + '.mp3');
-   tableauDeBruitsQuiMontent.push(audioElement);
+     var audioElement = document.createElement('audio');
+     audioElement.setAttribute('src', './sons/r_' + i + '.mp3');
+     tableauDeBruitsQuiMontent.push(audioElement);
+   }
  }
 
  $(document).scroll(function(event) {
    var newPos = $(document).scrollTop();
-   heightPerGoutte = haut / 50;
    gouttesToPlay = (newPos - currentPos) / heightPerGoutte;
    if (gouttesToPlay < 1 && gouttesToPlay > -1) {
      return;
    }
    currentPos = newPos;
+   var aleatoire = getRandomInt(0, bruitsDeGouttes * loops - 1);
    if (gouttesToPlay > 1) {
-     tableauDeBruitsQuiMontent[getRandomInt(0, bruitsDeGouttes-1)].play();
+     if (resetGoutte) {
+       tableauDeBruitsQuiMontent[aleatoire].pause();
+       tableauDeBruitsQuiMontent[aleatoire].currentTime = 0;
+     }
+     tableauDeBruitsQuiMontent[aleatoire].play();
    } else {
-     tableauDeBruitsQuiTombent[getRandomInt(0, bruitsDeGouttes-1)].play();
+     if (resetGoutte) {
+       tableauDeBruitsQuiTombent[aleatoire].pause();
+       tableauDeBruitsQuiTombent[aleatoire].currentTime = 0;
+     }
+     tableauDeBruitsQuiTombent[aleatoire].play();
    }
  });
 
