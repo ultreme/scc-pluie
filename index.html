@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
 	<style "text/css" charset="utf-8">
-	
+
 		.goutte1{
 			position:absolute;
 		}
@@ -32,27 +32,56 @@
 <!-- <a name="1" style="position:absolute;top:21000px;"></a> -->
 
 <script type="text/javascript">
+ var larg = (window.innerWidth)-150;
+ var haut = 19200;
+ var bruitsDeGouttes = 15;
 
-	var larg = (window.innerWidth)-150;
-	var haut = 19200;
+ function getRandomInt (min, max) {
+   return Math.floor(Math.random() * (max - min + 1)) + min;
+ }
 
-	function getRandomInt (min, max) {
-   		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
+ for (var i=0;i<100;i++) {
+   var gouttex = getRandomInt (50, larg);
+   var gouttey = getRandomInt (900, haut);
+   document.write("<img id='gouttedevant" + i + "'class='goutte1' style='top:" + gouttey + "px;left:" + gouttex + "px;' src='goutte.png'>");
+ }
 
-	for (var i=0;i<100;i++) { 	
-		var gouttex = getRandomInt (50, larg);
-		var gouttey = getRandomInt (900, haut);
-		document.write("<img id='gouttedevant" + i + "'class='goutte1' style='top:" + gouttey + "px;left:" + gouttex + "px;' src='goutte.png'>");
-	}
+ for (var j=0;j<100;j++) {
+   var gouttex = getRandomInt (50, larg);
+   var gouttey = getRandomInt (900, haut);
+   document.write("<img id='gouttederriere" + j + "'class='goutte2' style='top:" + gouttey + "px;left:" + gouttex + "px;' src='goutte.png'>");
+ }
 
-	for (var j=0;j<100;j++) { 	
-		var gouttex = getRandomInt (50, larg);
-		var gouttey = getRandomInt (900, haut);
-		document.write("<img id='gouttederriere" + j + "'class='goutte2' style='top:" + gouttey + "px;left:" + gouttex + "px;' src='goutte.png'>");
-	}
+ $(document).scrollTop($(document).height());
 
-	$(document).scrollTop($(document).height());
+ var currentPos = $(document).scrollTop();
+ var tableauDeBruitsQuiTombent = [];
+ var tableauDeBruitsQuiMontent = [];
+
+ for (var i = 1; i <= bruitsDeGouttes; i++) {
+   var audioElement = document.createElement('audio');
+   audioElement.setAttribute('src', './sons/' + i + '.mp3');
+   tableauDeBruitsQuiTombent.push(audioElement);
+
+   var audioElement = document.createElement('audio');
+   audioElement.setAttribute('src', './sons/r_' + i + '.mp3');
+   tableauDeBruitsQuiMontent.push(audioElement);
+ }
+
+ $(document).scroll(function(event) {
+   var newPos = $(document).scrollTop();
+   heightPerGoutte = haut / 50;
+   gouttesToPlay = (newPos - currentPos) / heightPerGoutte;
+   if (gouttesToPlay < 1 && gouttesToPlay > -1) {
+     return;
+   }
+   currentPos = newPos;
+   if (gouttesToPlay > 1) {
+     tableauDeBruitsQuiMontent[getRandomInt(0, bruitsDeGouttes-1)].play();
+   } else {
+     tableauDeBruitsQuiTombent[getRandomInt(0, bruitsDeGouttes-1)].play();
+   }
+ });
 
 </script>
 </body>
